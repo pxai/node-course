@@ -1,0 +1,25 @@
+{
+  "name": "notes-node",
+  "version": "1.0.0",
+  "description": "Sample notes app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pxai/node-course.git"
+  },
+  "keywords": [
+    "notes"
+  ],
+  "author": "Pello Altadill",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pxai/node-course/issues"
+  },
+  "homepage": "https://github.com/pxai/node-course#readme",
+  "dependencies": {
+    "lodash": "^4.17.5"
+  }
+}
