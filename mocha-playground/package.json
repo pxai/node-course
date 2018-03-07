@@ -1,0 +1,27 @@
+{
+  "name": "mocha-playground",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha **/*.test.js",
+    "test-watch": "nodemon --exec \"npm test\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pxai/mocha-playground.git"
+  },
+  "keywords": [
+    "mocha"
+  ],
+  "author": "Pello Altadill",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pxai/mocha-playground/issues"
+  },
+  "homepage": "https://github.com/pxai/mocha-playground#readme",
+  "devDependencies": {
+    "expect": "^22.4.0",
+    "mocha": "^5.0.4"
+  }
+}
