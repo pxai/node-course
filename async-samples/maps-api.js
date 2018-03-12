@@ -7,5 +7,6 @@ request({
 }, (err, response, body) => {
   if (err) { console.log('Error ocurred: ', err); }
 //  console.log('Response from api: ', response);
-  console.log(JSON.stringify(body));
+// stringify: string, filter, spaces_for_indentation
+  console.log(JSON.stringify(body, undefined, 4));
 })
