@@ -9,9 +9,23 @@ it('should add async', (done) => {
   });
 });
 
+it('should substract async', (done) => {
+  asyncmath.sub(44, 2, (sub) => {
+      expect(sub).toBe(42);
+      done();
+  })
+})
+
 it('should mul async', (done) => {
   asyncmath.mul(4,4, (mul) => {
-    expect(mul).toBeA('number');
+    expect(mul).toBe(16);
     done();
   });
 });
+
+it('shoud divide async', (done) => {
+  asyncmath.div(84,2, (div) => {
+    expect(div).toBe(42);
+    done();
+  });
+})
