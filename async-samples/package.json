@@ -4,11 +4,14 @@
   "description": "Simple async samples",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodemon mocha"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "request": "^2.85.0"
+  },
+  "devDependencies": {
+    "expect": "^23.0.0-alpha.0"
   }
 }
