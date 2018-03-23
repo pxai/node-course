@@ -12,6 +12,12 @@ app.use((req, res, next) => {
 console.log(mymiddle)
 app.use(mymiddle);
 
+/**
+// This will block all the requests, unless we have static before
+app.use((req, res, next) => {
+  res.render('under_maintenance.hbs')
+});
+*/
 app.get('/', (req, res) => {
   res.send('This works');
 });
