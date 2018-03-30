@@ -26,6 +26,15 @@ app.get('/friends', (req, res) => {
     })
 });
 
+app.get('/friends/delete/:id', (req, res) => {
+  console.log(req.params.id);
+    Friend.remove({_id: req.params.id}).then((friend) => {
+      res.status(200).redirect('/friends');
+    }).catch((err) => {
+      if (err) return res.status(404).render('404');
+    })
+});
+
 app.get('/api/friends', (req, res) => {
     Friend.find().then((friends) => {
       res.status(200).send(friends);

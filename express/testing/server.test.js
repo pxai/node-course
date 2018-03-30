@@ -1,6 +1,6 @@
 const expect = require('expect');
 const request = require('supertest');
-var app = require('./server').app;
+const app = require('./server').app;
 
 describe('Simple home requests', ()=> {
 
