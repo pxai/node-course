@@ -20,7 +20,7 @@ describe('Simple home requests', ()=> {
 
 describe('Requests for json content', () => {
     it('should return data', (done) => {
-        request(app).get('/data')
+        request(app).get('/friends')
         .expect(200)
         .expect((res) => {
             expect(res.body).toInclude({id:42, name : 'Asimov'});
