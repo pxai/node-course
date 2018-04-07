@@ -1,8 +1,10 @@
+require('./config')
 const express = require('express');
 const hbs = require('hbs');
 const Task = require('./task');
 const bodyParser = require('body-parser')
 const {ObjectID} = require('mongodb');
+const PORT = process.env.PORT || 3000;
 
 hbs.registerHelper('select', function(selected, options) {
     return options.fn(this).replace(
@@ -71,6 +73,7 @@ app.get('/tasks/new', (req, res) => {
 });
 
 app.post('/tasks/new', (req, res) => {
+
   const newTask = new Task({
     name: req.body.name,
     date: new Date(),
@@ -81,8 +84,9 @@ app.post('/tasks/new', (req, res) => {
     console.log('Created: ', task)
     res.status(200).redirect('/tasks');
   }).catch((err) => {
-    err.details = 'Record Not found';
-    if (err) return res.render('404', {err});
+      console.log('Failed creation: ', newTask, err)
+    err.details = 'Could not create record';
+    if (err) return res.status(404).render('404', {err});
   })
 });
 
@@ -101,6 +105,7 @@ app.get('/tasks/update/:id', (req, res) => {
 });
 
 app.post('/tasks/update', (req, res) => {
+    console.log('LLEGA?',req.body)
   const newTask = {
     name: req.body.name,
     date: new Date(),
@@ -117,8 +122,8 @@ app.post('/tasks/update', (req, res) => {
   })
 });
 
-app.listen(3000, () => {
-    console.log('This works on 3000, you don\'t');
+app.listen(PORT, () => {
+    console.log(`This works in ${process.env.NODE_ENV} mode on ${PORT}`);
 });
 
 module.exports.app = app;
