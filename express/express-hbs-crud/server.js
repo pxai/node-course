@@ -81,7 +81,6 @@ app.post('/tasks/new', (req, res) => {
   });
 
   newTask.save().then((task) => {
-    console.log('Created: ', task)
     res.status(200).redirect('/tasks');
   }).catch((err) => {
       console.log('Failed creation: ', newTask, err)
@@ -105,7 +104,6 @@ app.get('/tasks/update/:id', (req, res) => {
 });
 
 app.post('/tasks/update', (req, res) => {
-    console.log('LLEGA?',req.body)
   const newTask = {
     name: req.body.name,
     date: new Date(),
@@ -118,7 +116,7 @@ app.post('/tasks/update', (req, res) => {
     res.status(200).redirect('/tasks');
   }).catch((err) => {
     err.details = 'Error updating';
-    if (err) return res.render('404', {err});
+    if (err) return res.status(404).render('404', {err});
   })
 });
 

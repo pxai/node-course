@@ -3,6 +3,10 @@ const request = require('supertest');
 const {ObjectID} = require('mongodb');
 const Task = require('./task');
 const app = require('./server').app;
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 const tasks = [{
   _id: new ObjectID(),
@@ -101,7 +105,22 @@ describe('New task tests', () => {
       .end(done);
   });
 
+  it('should update and return to task page', (done) => {
+    const newTask = {
+      name: 'Third task',
+      date: new Date(),
+      done: false
+    }
 
+    request(app).post('/tasks/new')
+      .type('form')
+      .send(newTask)
+      .expect(302)
+      .expect((res) => {
+        expect(res.text).toContain('Found. Redirecting to /tasks');
+      })
+      .end(done);
+  });
 })
 
 describe('Task update tests', () => {
@@ -127,9 +146,12 @@ describe('Task update tests', () => {
  });
 
  it('should update and return to task page', (done) => {
+   tasks[1]._id = tasks[1]._id.toHexString();
+   tasks[1].name = 'CHANGED';
 
    request(app).post('/tasks/update')
-     .send(tasks[0])
+     .type('form')
+     .send(tasks[1])
      .expect(302)
      .expect((res) => {
        expect(res.text).toContain('Found. Redirecting to /tasks');
