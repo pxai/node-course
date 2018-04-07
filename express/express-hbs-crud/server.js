@@ -2,6 +2,7 @@ const express = require('express');
 const hbs = require('hbs');
 const Task = require('./task');
 const bodyParser = require('body-parser')
+const {ObjectID} = require('mongodb');
 
 hbs.registerHelper('select', function(selected, options) {
     return options.fn(this).replace(
@@ -37,23 +38,31 @@ app.get('/tasks', (req, res) => {
 
 
 app.get('/tasks/detail/:id', (req, res) => {
-  console.log(req.params.id);
+
+  if (!ObjectID.isValid(req.params.id)) {
+    return res.status(404).render('404', {err :{details: 'Id not valid'}});
+  }
+
     Task.findById({_id: req.params.id}).then((task) => {
         res.status(200).render('detail', {task});
     }).catch((err) => {
       err.details = 'Record Not found';
-      if (err) return res.render('404', {err});
+      if (err) return res.status(404).render('404', {err});
     })
 
 });
 
 
 app.get('/tasks/delete/:id', (req, res) => {
+  if (!ObjectID.isValid(req.params.id)) {
+    return res.status(404).render('404', {err :{details: 'Id not valid'}});
+  }
+
     Task.remove({_id: req.params.id}).then((friend) => {
       res.status(200).redirect('/tasks');
     }).catch((err) => {
       err.details = 'Record Not found';
-      if (err) return res.render('404', {err});
+      if (err) return res.status(404).render('404', {err});
     })
 });
 
@@ -73,15 +82,21 @@ app.post('/tasks/new', (req, res) => {
     res.status(200).redirect('/tasks');
   }).catch((err) => {
     err.details = 'Record Not found';
-    if (err) return res.render('404', {err});  })
+    if (err) return res.render('404', {err});
+  })
 });
 
 app.get('/tasks/update/:id', (req, res) => {
+
+  if (!ObjectID.isValid(req.params.id)) {
+    return res.status(404).render('404', {err :{details: 'Id not valid'}});
+  }
+
   Task.findById({_id: req.params.id}).then((task) => {
       res.status(200).render('update', {task});
   }).catch((err) => {
     err.details = 'Record Not found';
-    if (err) return res.render('404', {err});
+    if (err) return res.status(404).render('404', {err});
   })
 });
 
