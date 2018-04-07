@@ -9,8 +9,9 @@
   <h2>This worked</h2>
   {{#each tasks}}
     <div>
-      <h3>{{ name }}</h3>
-      <p>{{age}} years, contact at: {{email}}</p>
+      <div>{{ name }}</div>
+      <p>{{date}} Done: {{done}}</p>
+      <a href='/tasks/detail/{{_id}}'>Detail</a>
       <a href='/tasks/update/{{_id}}'>Update</a>
       <a href='/tasks/delete/{{_id}}'>Delete</a>
     </div>

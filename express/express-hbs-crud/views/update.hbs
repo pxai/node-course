@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tasks: sample express CRUD app. New</title>
+</head>
+<body>
+  {{> header}}
+  <h2>Update task</h2>
+    <div>
+      <form name="update" method="post" action="/tasks/update">
+        <input type="hidden" name="_id" value="{{task._id}}">
+      <div><label for="name">Name</label></div>
+      <div><textarea name="name">{{task.name}}</textarea></div>
+      <div><label for="done">Done</label></div>
+      <div>
+        <select name="done">
+          {{#select task.done}}
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+          {{/select}}
+        </select>
+      </div>
+        <div><input type="submit" name="update" /></div>
+      </form>
+    </div>
+  {{> footer}}
+</body>
+</html>
