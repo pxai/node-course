@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tasks: sample express CRUD app</title>
+</head>
+<body>
+  {{> header}}
+  <h2>This worked</h2>
+  {{#each tasks}}
+    <div>
+      <h3>{{ name }}</h3>
+      <p>{{age}} years, contact at: {{email}}</p>
+      <a href='/tasks/update/{{_id}}'>Update</a>
+      <a href='/tasks/delete/{{_id}}'>Delete</a>
+    </div>
+  {{/each}}
+  {{> footer}}
+</body>
+</html>
