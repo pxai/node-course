@@ -4,12 +4,13 @@ const Task = require('./task');
 const bodyParser = require('body-parser')
 
 hbs.registerHelper('select', function(selected, options) {
-  console.log('Select', selected, options);
     return options.fn(this).replace(
         new RegExp(' value=\"' + selected + '\"'),
         '$& selected="selected"');
 });
-var app = express();
+
+const app = express();
+
 app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials');
 app.use(express.static(__dirname + '/public'));
@@ -27,10 +28,10 @@ app.get('/', (req, res) => {
 
 app.get('/tasks', (req, res) => {
     Task.find().then((tasks) => {
-      console.log(tasks)
       res.status(200).render('tasks', {tasks});
     }).catch((err) => {
-      if (err) return res.status(404).send(err);
+      err.details = 'Error getting tasks';
+      if (err) return res.render('404', {err});
     })
 });
 
@@ -40,18 +41,19 @@ app.get('/tasks/detail/:id', (req, res) => {
     Task.findById({_id: req.params.id}).then((task) => {
         res.status(200).render('detail', {task});
     }).catch((err) => {
-      if (err) return res.status(404).send(err);
+      err.details = 'Record Not found';
+      if (err) return res.render('404', {err});
     })
 
 });
 
 
 app.get('/tasks/delete/:id', (req, res) => {
-  console.log(req.params.id);
     Task.remove({_id: req.params.id}).then((friend) => {
       res.status(200).redirect('/tasks');
     }).catch((err) => {
-      if (err) return res.status(404).render('404');
+      err.details = 'Record Not found';
+      if (err) return res.render('404', {err});
     })
 });
 
@@ -60,7 +62,6 @@ app.get('/tasks/new', (req, res) => {
 });
 
 app.post('/tasks/new', (req, res) => {
-  console.log('sent post: ', req.body.name, req.body.done);
   const newTask = new Task({
     name: req.body.name,
     date: new Date(),
@@ -71,21 +72,20 @@ app.post('/tasks/new', (req, res) => {
     console.log('Created: ', task)
     res.status(200).redirect('/tasks');
   }).catch((err) => {
-    console.log('Error¿?: ', err)
-    if (err) return res.status(404).send(err);
-  })
+    err.details = 'Record Not found';
+    if (err) return res.render('404', {err});  })
 });
 
 app.get('/tasks/update/:id', (req, res) => {
   Task.findById({_id: req.params.id}).then((task) => {
       res.status(200).render('update', {task});
   }).catch((err) => {
-    if (err) return res.status(404).send(err);
+    err.details = 'Record Not found';
+    if (err) return res.render('404', {err});
   })
 });
 
 app.post('/tasks/update', (req, res) => {
-  console.log('sent post: ', req.body._id, req.body.name, req.body.done);
   const newTask = {
     name: req.body.name,
     date: new Date(),
@@ -95,11 +95,10 @@ app.post('/tasks/update', (req, res) => {
   Task.findByIdAndUpdate({_id: req.body._id},
     { $set: newTask },
     { new: true}).then((task) => {
-    console.log('Updated: ', task)
     res.status(200).redirect('/tasks');
   }).catch((err) => {
-    console.log('Error¿?: ', err)
-    if (err) return res.status(404).send(err);
+    err.details = 'Error updating';
+    if (err) return res.render('404', {err});
   })
 });
 
