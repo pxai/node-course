@@ -107,21 +107,10 @@ describe('Task delete tests', () => {
   });
 });
 
-/*
-*/
-/*
-describe('New task tests', () => {
-  it('should return new task page', (done) => {
-    request(app).get('/tasks/new')
-      .expect(200)
-      .expect((res) => {
-        expect(res.text).toContain('Add Task');
-        expect(res.text).toContain('<form name=\"new\" method=\"post\" action=\"/tasks/new\">');
-      })
-      .end(done);
-  });
 
-  it('should update and return to task page', (done) => {
+describe('New task tests', () => {
+
+  it('should insert', (done) => {
     const newTask = {
       name: 'Third task',
       date: new Date(),
@@ -131,9 +120,11 @@ describe('New task tests', () => {
     request(app).post('/tasks/new')
       .type('form')
       .send(newTask)
-      .expect(302)
+      .expect(200)
       .expect((res) => {
-        expect(res.text).toContain('Found. Redirecting to /tasks');
+        expect(res.body.task.name).toBe(newTask.name);
+        expect(res.body.task.done).toBe(newTask.done);
+        expect(res.body.task._id).not.toBe(null);
       })
       .end((err, res) => {
         if (err) {
@@ -149,9 +140,10 @@ describe('New task tests', () => {
   });
 });
 
+
 describe('Task update tests', () => {
   it('should return 404 with wrong id', (done) => {
-    request(app).get('/tasks/update/666')
+    request(app).put('/tasks/update/666')
       .expect(404)
       .expect((res) => {
         expect(res.body.err.details).toBe('Id not valid');
@@ -159,38 +151,26 @@ describe('Task update tests', () => {
       .end(done);
   });
 
- it('should return the update form', (done) => {
-   request(app).get(`/tasks/update/${tasks[1]._id}`)
-    .expect(200)
-    .expect((res) => {
-      expect(res.text).toContain('Update task');
-      expect(res.text).toContain('<form name=\"update\" method=\"post\" action=\"/tasks/update\">');
-      expect(res.text).toContain(`<input type=\"hidden\" name=\"_id\" value=\"${tasks[1]._id}\">`)
-    })
-    .end(done);
- });
-
  it('should update and return to task page', (done) => {
    tasks[1]._id = tasks[1]._id.toHexString();
    tasks[1].name = 'CHANGED';
 
-   request(app).post('/tasks/update')
+   request(app).put(`/tasks/update/${tasks[1]._id}`)
      .type('form')
      .send(tasks[1])
-     .expect(302)
+     .expect(200)
      .expect((res) => {
-       expect(res.text).toContain('Found. Redirecting to /tasks');
+       expect(res.body.task.name).toContain('CHANGED');
      })
      .end((err, res) => {
        if (err) {
          return done(err);
        }
 
-       Task.findOne({_id: tasks[1]._id}).then((task) => {
+    Task.findOne({_id: tasks[1]._id}).then((task) => {
          expect(task.name).toBe('CHANGED');
          done();
        }).catch((e) => done(e));
      });
  });
 });
-*/

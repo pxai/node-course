@@ -64,29 +64,20 @@ app.post('/tasks/new', (req, res) => {
   });
 
   newTask.save().then((task) => {
-    res.status(200).redirect('/tasks');
+    res.status(200).send({task});
   }).catch((err) => {
       console.log('Failed creation: ', newTask, err)
     err.details = 'Could not create record';
-    if (err) return res.status(404).render('404', {err});
+    if (err) return res.status(404).send({err});
   })
 });
 
-app.get('/tasks/update/:id', (req, res) => {
+
+app.put('/tasks/update/:id', (req, res) => {
 
   if (!ObjectID.isValid(req.params.id)) {
-    return res.status(404).render('404', {err :{details: 'Id not valid'}});
+    return res.status(404).send({err :{details: 'Id not valid'}});
   }
-
-  Task.findById({_id: req.params.id}).then((task) => {
-      res.status(200).render('update', {task});
-  }).catch((err) => {
-    err.details = 'Record Not found';
-    if (err) return res.status(404).render('404', {err});
-  })
-});
-
-app.post('/tasks/update', (req, res) => {
   const newTask = {
     name: req.body.name,
     date: new Date(),
@@ -96,10 +87,10 @@ app.post('/tasks/update', (req, res) => {
   Task.findByIdAndUpdate({_id: req.body._id},
     { $set: newTask },
     { new: true}).then((task) => {
-    res.status(200).redirect('/tasks');
+    res.status(200).send({task});
   }).catch((err) => {
     err.details = 'Error updating';
-    if (err) return res.status(404).render('404', {err});
+    if (err) return res.status(404).send({err});
   })
 });
 
