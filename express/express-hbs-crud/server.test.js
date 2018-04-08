@@ -85,12 +85,21 @@ describe('Task delete tests', () => {
   });
 
   it('should delete data with valid id', (done) => {
+      let deletedId = tasks[0]._id.toHexString();
       request(app).get(`/tasks/delete/${tasks[0]._id}`)
           .expect(302)
           .expect((res) => {
             expect(res.text).toContain('Found. Redirecting to /tasks');
           })
-          .end(done);
+          .end((err, res) => {
+            if (err) {
+              return done(err);
+            }
+            Task.findOne({_id: deletedId}).then((task) => {
+              expect(task).toBe(null);
+              done();
+            }).catch((e) => done(e));
+        });
   });
 });
 
