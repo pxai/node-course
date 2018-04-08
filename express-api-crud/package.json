@@ -1,0 +1,21 @@
+{
+  "name": "express-api-crud",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "export NODE_ENV=test || SET NODE_ENV=test &&  mocha *.test.js"
+  },
+  "author": "Pello Altadill",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "mongoose": "^5.0.13"
+  },
+  "devDependencies": {
+    "expect": "^22.4.3",
+    "mocha": "^5.0.5",
+    "supertest": "^3.0.0"
+  }
+}
