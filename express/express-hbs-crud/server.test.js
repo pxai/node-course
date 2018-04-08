@@ -94,6 +94,19 @@ describe('Task delete tests', () => {
   });
 });
 
+/*
+err, res) => {
+  if (err) {
+    return done(err);
+  }
+
+  Task.findOne({name: newTask.name}).then((dbTasks) => {
+    expect(dbTasks.length).toBe(1);
+    expect(dbTasks[0].name).toBe(newTask.name);
+    done();
+  }).catch((e) => done(e));
+}
+*/
 describe('New task tests', () => {
   it('should return new task page', (done) => {
     request(app).get('/tasks/new')
@@ -119,9 +132,19 @@ describe('New task tests', () => {
       .expect((res) => {
         expect(res.text).toContain('Found. Redirecting to /tasks');
       })
-      .end(done);
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Task.find({name: newTask.name}).then((dbTasks) => {
+          expect(dbTasks.length).toBe(1);
+          expect(dbTasks[0].name).toBe(newTask.name);
+          done();
+        }).catch((e) => done(e));
+      });
   });
-})
+});
 
 describe('Task update tests', () => {
   it('should return 404 with wrong id', (done) => {
@@ -156,6 +179,15 @@ describe('Task update tests', () => {
      .expect((res) => {
        expect(res.text).toContain('Found. Redirecting to /tasks');
      })
-     .end(done);
+     .end((err, res) => {
+       if (err) {
+         return done(err);
+       }
+
+       Task.findOne({_id: tasks[1]._id}).then((task) => {
+         expect(task.name).toBe('CHANGED');
+         done();
+       }).catch((e) => done(e));
+     });
  });
 })
