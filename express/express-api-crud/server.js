@@ -1,22 +1,13 @@
 require('./config')
 const express = require('express');
-const hbs = require('hbs');
 const Task = require('./task');
 const bodyParser = require('body-parser')
 const {ObjectID} = require('mongodb');
 const PORT = process.env.PORT || 3000;
 
-hbs.registerHelper('select', function(selected, options) {
-    return options.fn(this).replace(
-        new RegExp(' value=\"' + selected + '\"'),
-        '$& selected="selected"');
-});
 
 const app = express();
 
-app.set('view engine', 'hbs');
-hbs.registerPartials(__dirname + '/views/partials');
-app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
@@ -24,53 +15,45 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 
 app.get('/', (req, res) => {
-    res.render('index');
+    res.send({result : 'OK'});
 });
-
-
 
 app.get('/tasks', (req, res) => {
     Task.find().then((tasks) => {
-      res.status(200).render('tasks', {tasks});
+      res.status(200).send({tasks});
     }).catch((err) => {
       err.details = 'Error getting tasks';
-      if (err) return res.render('404', {err});
+      if (err) return res.send({err});
     })
 });
 
 
-app.get('/tasks/detail/:id', (req, res) => {
-
+app.get('/tasks/:id', (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
-    return res.status(404).render('404', {err :{details: 'Id not valid'}});
+    return res.status(404).send({err :{details: 'Id not valid'}});
   }
-
     Task.findById({_id: req.params.id}).then((task) => {
-        res.status(200).render('detail', {task});
+        res.status(200).send({task});
     }).catch((err) => {
       err.details = 'Record Not found';
-      if (err) return res.status(404).render('404', {err});
+      if (err) return res.status(404).send({err});
     })
 
 });
 
 
-app.get('/tasks/delete/:id', (req, res) => {
+app.delete('/tasks/:id', (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
-    return res.status(404).render('404', {err :{details: 'Id not valid'}});
+    return res.status(404).send({err :{details: 'Id not valid'}});
   }
-
-    Task.remove({_id: req.params.id}).then((friend) => {
-      res.status(200).redirect('/tasks');
+    Task.findOneAndRemove({_id: req.params.id}).then((task) => {
+      res.status(200).send({task});
     }).catch((err) => {
       err.details = 'Record Not found';
-      if (err) return res.status(404).render('404', {err});
+      if (err) return res.status(404).send({err});
     })
 });
 
-app.get('/tasks/new', (req, res) => {
-      res.status(200).render('new');
-});
 
 app.post('/tasks/new', (req, res) => {
 

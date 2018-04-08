@@ -35,7 +35,7 @@ describe('Simple home requests', ()=> {
         request(app).get('/')
             .expect(200)
             .expect((res) => {
-               expect(res.text).toContain('Welcome to Tasks App')
+               expect(res.body.result).toBe('OK');
             })
             .end(done);
     });
@@ -46,7 +46,7 @@ describe('Tasks case tests', () => {
         request(app).get('/tasks')
             .expect(200)
             .expect((res) => {
-               expect(res.text).toContain('Tasks List')
+               expect(res.body.tasks.length).toBe(2);
             })
             .end(done);
     });
@@ -54,42 +54,46 @@ describe('Tasks case tests', () => {
 
 describe('Tasks detail tests', () => {
   it('should return 404 with wrong id', (done) => {
-      request(app).get('/tasks/detail/666')
+      request(app).get('/tasks/666')
           .expect(404)
           .expect((res) => {
-            expect(res.text).toContain('<h2>Error</h2>');
-            expect(res.text).toContain('Id not valid');
+            expect(res.body.err.details).toBe('Id not valid');
           })
           .end(done);
   });
 
   it('should return data with valid id', (done) => {
-      request(app).get(`/tasks/detail/${tasks[0]._id}`)
+      request(app).get(`/tasks/${tasks[0]._id.toHexString()}`)
           .expect(200)
           .expect((res) => {
-            expect(res.text).toContain('<h3>Task: First task</h3>');
+            expect(res.body.task._id).toBe(tasks[0]._id.toHexString());
+            expect(res.body.task.name).toBe(tasks[0].name);
+            expect(res.body.task.done).toBe(tasks[0].done);
           })
           .end(done);
   });
 });
 
+
+
 describe('Task delete tests', () => {
   it('should return 404 with wrong id', (done) => {
-    request(app).get('/tasks/delete/666')
+    request(app).delete('/tasks/666')
       .expect(404)
       .expect((res) => {
-        expect(res.text).toContain('<h2>Error</h2>');
-        expect(res.text).toContain('Id not valid');
+        expect(res.body.err.details).toBe('Id not valid');
       })
       .end(done);
   });
 
   it('should delete data with valid id', (done) => {
       let deletedId = tasks[0]._id.toHexString();
-      request(app).get(`/tasks/delete/${tasks[0]._id}`)
-          .expect(302)
+      request(app).delete(`/tasks/${tasks[0]._id}`)
+          .expect(200)
           .expect((res) => {
-            expect(res.text).toContain('Found. Redirecting to /tasks');
+            expect(res.body.task._id).toContain(tasks[0]._id);
+            expect(res.body.task.name).toBe(tasks[0].name);
+            expect(res.body.task.done).toBe(tasks[0].done);
           })
           .end((err, res) => {
             if (err) {
@@ -99,23 +103,13 @@ describe('Task delete tests', () => {
               expect(task).toBe(null);
               done();
             }).catch((e) => done(e));
-        });
+          });
   });
 });
 
 /*
-err, res) => {
-  if (err) {
-    return done(err);
-  }
-
-  Task.findOne({name: newTask.name}).then((dbTasks) => {
-    expect(dbTasks.length).toBe(1);
-    expect(dbTasks[0].name).toBe(newTask.name);
-    done();
-  }).catch((e) => done(e));
-}
 */
+/*
 describe('New task tests', () => {
   it('should return new task page', (done) => {
     request(app).get('/tasks/new')
@@ -160,8 +154,7 @@ describe('Task update tests', () => {
     request(app).get('/tasks/update/666')
       .expect(404)
       .expect((res) => {
-        expect(res.text).toContain('<h2>Error</h2>');
-        expect(res.text).toContain('Id not valid');
+        expect(res.body.err.details).toBe('Id not valid');
       })
       .end(done);
   });
@@ -199,4 +192,5 @@ describe('Task update tests', () => {
        }).catch((e) => done(e));
      });
  });
-})
+});
+*/
