@@ -1,6 +1,9 @@
 require('./config')
 const express = require('express');
-const Task = require('./task');
+const {mongoose, Todo, Task } = require('./models');
+//var {Todo} = require('./models/todo');
+//var {User} = require('./models/user');
+const {authenticate} = require('./middleware/authenticate');
 const bodyParser = require('body-parser')
 const {ObjectID} = require('mongodb');
 const PORT = process.env.PORT || 3000;
