@@ -74,20 +74,19 @@ console.log('Saving:', newStock);
 
 
 app.put('/stocks/:id', (req, res) => {
-
+  console.log(req.params.id)
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(404).send({err :{details: 'Id not valid'}});
   }
-  const updatedStock = new Stock({
+  const id = req.params.id;
+  const updatedStock = {
     name: req.body.name,
     qty: req.body.qty,
     price: req.body.price,
     id_user: req.body.id_user
-  });
+  };
 
-  Stock.findByIdAndUpdate({_id: req.body._id},
-    { $set: updatedStock },
-    { new: true}).then((stock) => {
+  Stock.findByIdAndUpdate(id, {$set: updatedStock}, {new: true}).then((stock) => {
     res.status(200).send({stock});
   }).catch((err) => {
     err.details = 'Error updating';
