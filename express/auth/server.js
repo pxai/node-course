@@ -1,42 +1,38 @@
 require('./config')
+
+const _ = require('lodash');
 const express = require('express');
-const {mongoose, Todo, Task } = require('./models');
-//var {Todo} = require('./models/todo');
-//var {User} = require('./models/user');
-const {authenticate} = require('./middleware/authenticate');
 const bodyParser = require('body-parser')
 const {ObjectID} = require('mongodb');
+const { mongoose, Todo, Stock } = require('./models');
+const {authenticate} = require('./middleware/authenticate');
 const PORT = process.env.PORT || 3000;
 
 
 const app = express();
 
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-}));
-//hbs.registerHelper('each');
-
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.send({result : 'OK'});
 });
 
-app.get('/tasks', (req, res) => {
-    Task.find().then((tasks) => {
-      res.status(200).send({tasks});
+app.get('/stocks', (req, res) => {
+    Stock.find().then((stocks) => {
+      res.status(200).send({stocks});
     }).catch((err) => {
-      err.details = 'Error getting tasks';
+      err.details = 'Error getting stocks';
       if (err) return res.send({err});
     })
 });
 
 
-app.get('/tasks/:id', (req, res) => {
+app.get('/stocks/:id', (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(404).send({err :{details: 'Id not valid'}});
   }
-    Task.findById({_id: req.params.id}).then((task) => {
-        res.status(200).send({task});
+    Stock.findById({_id: req.params.id}).then((stock) => {
+        res.status(200).send({stock});
     }).catch((err) => {
       err.details = 'Record Not found';
       if (err) return res.status(404).send({err});
@@ -45,12 +41,12 @@ app.get('/tasks/:id', (req, res) => {
 });
 
 
-app.delete('/tasks/:id', (req, res) => {
+app.delete('/stocks/:id', (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
-    return res.status(404).send({err :{details: 'Id not valid'}});
+    return res.status(404).sennewd({err :{details: 'Id not valid'}});
   }
-    Task.findOneAndRemove({_id: req.params.id}).then((task) => {
-      res.status(200).send({task});
+    Stock.findOneAndRemove({_id: req.params.id}).then((stock) => {
+      res.status(200).send({stock});
     }).catch((err) => {
       err.details = 'Record Not found';
       if (err) return res.status(404).send({err});
@@ -58,39 +54,41 @@ app.delete('/tasks/:id', (req, res) => {
 });
 
 
-app.post('/tasks/new', (req, res) => {
-
-  const newTask = new Task({
+app.post('/stocks', (req, res) => {
+console.log('Pre-save', req.body)
+  const newStock = new Stock({
     name: req.body.name,
-    date: new Date(),
-    done: req.body.done
+    qty: req.body.qty,
+    price: req.body.price,
+    id_user: req.body.id_user
   });
-
-  newTask.save().then((task) => {
-    res.status(200).send({task});
+console.log('Saving:', newStock);
+  newStock.save().then((stock) => {
+    res.status(200).send({stock});
   }).catch((err) => {
-      console.log('Failed creation: ', newTask, err)
+      console.log('Failed creation: ', newStock, err)
     err.details = 'Could not create record';
     if (err) return res.status(404).send({err});
   })
 });
 
 
-app.put('/tasks/update/:id', (req, res) => {
+app.put('/stocks/:id', (req, res) => {
 
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(404).send({err :{details: 'Id not valid'}});
   }
-  const newTask = {
+  const updatedStock = new Stock({
     name: req.body.name,
-    date: new Date(),
-    done: req.body.done
-  };
+    qty: req.body.qty,
+    price: req.body.price,
+    id_user: req.body.id_user
+  });
 
-  Task.findByIdAndUpdate({_id: req.body._id},
-    { $set: newTask },
-    { new: true}).then((task) => {
-    res.status(200).send({task});
+  Stock.findByIdAndUpdate({_id: req.body._id},
+    { $set: updatedStock },
+    { new: true}).then((stock) => {
+    res.status(200).send({stock});
   }).catch((err) => {
     err.details = 'Error updating';
     if (err) return res.status(404).send({err});
