@@ -1,8 +1,8 @@
-var { User } = require('./../models');
+const { User } = require('./../models');
 
 var authenticate = (req, res, next) => {
-  var token = req.header('x-auth');
-
+  const token = req.header('x-auth');
+  console.log('Middleware> Token: ', token)
   User.findByToken(token).then((user) => {
     if (!user) {
       return Promise.reject();

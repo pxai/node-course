@@ -4,7 +4,7 @@ const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser')
 const {ObjectID} = require('mongodb');
-const { mongoose, Todo, Stock } = require('./models');
+const { mongoose, Stock, User } = require('./models');
 const {authenticate} = require('./middleware/authenticate');
 const PORT = process.env.PORT || 3000;
 
@@ -92,6 +92,39 @@ app.put('/stocks/:id', (req, res) => {
     err.details = 'Error updating';
     if (err) return res.status(404).send({err});
   })
+});
+
+
+// POST /users
+app.post('/users', (req, res) => {
+  const body = _.pick(req.body, ['email', 'password']);
+  const user = new User(body);
+
+  console.log('POST user: ', body)
+
+  user.save().then(() => {
+    return user.generateAuthToken();
+  }).then((token) => {
+    res.header('x-auth', token).send(user);
+  }).catch((e) => {
+    res.status(400).send(e);
+  })
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
+});
+
+app.post('/users/login', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+
+  User.findByCredentials(body.email, body.password).then((user) => {
+    return user.generateAuthToken().then((token) => {
+      res.header('x-auth', token).send(user);
+    });
+  }).catch((e) => {
+    res.status(400).send();
+  });
 });
 
 app.listen(PORT, () => {
