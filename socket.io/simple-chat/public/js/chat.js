@@ -16,3 +16,11 @@ socket.on('disconnect', function () {
 socket.on('serverMessage', function (message) {
   console.log('Message from server', message);
 });
+
+$('#send').on('click', function (e) {
+	socket.emit('clientMessage', {
+		text: $('#message').val(),
+		when: new Date()
+	});
+});
+
