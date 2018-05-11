@@ -12,6 +12,22 @@ const div = (a, b) => {
 		resolve(a/b);
 	});
 };
+
+const sub = (a, b) => {
+	return new Promise((resolve, reject) =>  {
+		if (typeof a != 'number' || typeof b != 'number')
+			reject(`incorrect non-numeric arguments ${a}, ${b}`);
+		resolve(a- b);
+	});
+};
+
+const mul = (a, b) => {
+	return new Promise((resolve, reject) =>  {
+		if (typeof a != 'number' || typeof b != 'number')
+			reject(`incorrect non-numeric arguments ${a}, ${b}`);
+		resolve(a*b);
+	});
+};
 /*
 add(40,2)
 	.then(result => console.log(result))
@@ -21,4 +37,4 @@ div(84,0)
 	.then(result => console.log(result))
 	.catch(e => console.log(e)); 
 */
-module.exports = { add, div };
+module.exports = { add, div, mul, sub };
