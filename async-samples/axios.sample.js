@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const url = '';
+const url = 'http://api.postcodes.io/random/postcodes';
 
 const getDataFromApi = () => {
 	return axios.get(`${url}`)
@@ -9,3 +9,9 @@ const getDataFromApi = () => {
 			});
 
 }
+
+const getDataFromApiAsync = async () => {
+	const result = await axios.get(`${url}`);
+	return result;
+}
+getDataFromApi().then(r=>console.log(r));
