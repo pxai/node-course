@@ -55,14 +55,12 @@ app.delete('/stocks/:id', (req, res) => {
 
 
 app.post('/stocks', (req, res) => {
-console.log('Pre-save', req.body)
   const newStock = new Stock({
     name: req.body.name,
     qty: req.body.qty,
     price: req.body.price,
     id_user: req.body.id_user
   });
-console.log('Saving:', newStock);
   newStock.save().then((stock) => {
     res.status(200).send({stock});
   }).catch((err) => {

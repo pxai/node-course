@@ -39,6 +39,25 @@ describe('GET /stocks', () => {
 	});	
 });
 
+describe('GET /stocks/:id', () => {
+	it('should return a valid stock', (done) => {
+		request(app)
+			.get(`/stocks/${stocks[0]._id.toHexString()}`)
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.stock.name).toBe(stocks[0].name);
+			})
+			.end(done);
+	});
+
+	it('should not return stock with invalid id', (done) => {
+		request(app)
+			.get('/stocks/666')
+			.expect(404)
+			.end(done);
+	});
+});
+
 describe('POST /stocks', () => {
 	it('should create a new stock', (done) => {
 		const stock = { name: 'PX', qty: 1, price: 4.5, id_user: 1 }
@@ -72,7 +91,6 @@ describe('POST /stocks', () => {
 				}
 			Stock.find().then((stocks) => {
 				expect(stocks.length).toBe(2);
-				done();
 			}).catch((e)=>done(e));
 			})
 			.end(done);
