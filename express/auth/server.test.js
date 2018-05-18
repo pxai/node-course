@@ -26,6 +26,19 @@ beforeEach((done) => {
 });
 
 
+describe('GET /stocks', () => {
+	it('should return all stocks', (done) => {
+		request(app)
+			.get('/stocks')
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.stocks.length).toBe(2);
+			})
+			.end(done);
+	
+	});	
+});
+
 describe('POST /stocks', () => {
 	it('should create a new stock', (done) => {
 		const stock = { name: 'PX', qty: 1, price: 4.5, id_user: 1 }
@@ -47,6 +60,23 @@ describe('POST /stocks', () => {
 				}).catch((e) => done(e));
 			});
 	});
+/*
+	it('should not create stock with invalid data', (done) => {
+		request(app)
+			.post('/stocks')
+			.send({})
+			.expect(400)
+			.end((err,res) => {
+				if (err) {
+					return done(err);
+				}
+			Stock.find().then((stocks) => {
+				expect(stocks.length).toBe(2);
+				done();
+			}).catch((e)=>done(e));
+			})
+			.end(done);
 
-
+	});
+*/
 });
