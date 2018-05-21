@@ -43,7 +43,7 @@ app.get('/stocks/:id', (req, res) => {
 
 app.delete('/stocks/:id', (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
-    return res.status(404).sennewd({err :{details: 'Id not valid'}});
+    return res.status(404).send({err :{details: 'Id not valid'}});
   }
     Stock.findOneAndRemove({_id: req.params.id}).then((stock) => {
       res.status(200).send({stock});

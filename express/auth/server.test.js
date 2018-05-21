@@ -98,3 +98,35 @@ describe('POST /stocks', () => {
 	});
 */
 });
+
+describe('Stock delete tests', () => {
+  it('should return 404 with wrong id', (done) => {
+    request(app).delete('/stocks/666')
+      .expect(404)
+      .expect((res) => {
+        expect(res.body.err.details).toBe('Id not valid');
+      })
+      .end(done);
+  });
+
+  it('should delete data with valid id', (done) => {
+      let deletedId = stocks[0]._id.toHexString();
+      request(app).delete(`/stocks/${stocks[0]._id}`)
+          .expect(200)
+          .expect((res) => {
+            expect(res.body.stock._id).toContain(stocks[0]._id);
+            expect(res.body.stock.name).toBe(stocks[0].name);
+            expect(res.body.stock.done).toBe(stocks[0].done);
+          })
+          .end((err, res) => {
+            if (err) {
+              return done(err);
+            }
+            Stock.findOne({_id: deletedId}).then((stock) => {
+              expect(stock).toBe(null);
+              done();
+            }).catch((e) => done(e));
+          });
+  });
+});
+
