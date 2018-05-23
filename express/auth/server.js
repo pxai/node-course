@@ -72,7 +72,6 @@ app.post('/stocks', (req, res) => {
 
 
 app.put('/stocks/:id', (req, res) => {
-  console.log(req.params.id)
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(404).send({err :{details: 'Id not valid'}});
   }
@@ -84,6 +83,7 @@ app.put('/stocks/:id', (req, res) => {
     id_user: req.body.id_user
   };
 
+  console.log(updatedStock)
   Stock.findByIdAndUpdate(id, {$set: updatedStock}, {new: true}).then((stock) => {
     res.status(200).send({stock});
   }).catch((err) => {

@@ -79,27 +79,48 @@ describe('POST /stocks', () => {
 				}).catch((e) => done(e));
 			});
 	});
-/*
+
 	it('should not create stock with invalid data', (done) => {
 		request(app)
 			.post('/stocks')
 			.send({})
-			.expect(400)
-			.end((err,res) => {
+			.expect(404)
+			.expect((res,err) => {
 				if (err) {
 					return done(err);
 				}
 			Stock.find().then((stocks) => {
 				expect(stocks.length).toBe(2);
-			}).catch((e)=>done(e));
+			}).catch((e)=>done());
+		}).end(done);
+	});
+});
+
+describe('PUT /stock/:id', () => {
+	it('should return 404 with wrong id', (done) => {
+		request(app).put('/stocks/666')
+			.expect(404)
+			.expect((res) => {
+				expect(res.body.err.details).toBe('Id not valid');
+			})
+			.end(done);
+	});
+
+	it('should update correctly', (done) => {
+		let updatedStock = stocks[0];
+		updatedStock.name = 'IBM';
+		request(app).put(`/stocks/${stocks[0]._id}`)
+			.send(updatedStock)
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.stock.name).toBe('IBM');
 			})
 			.end(done);
 
 	});
-*/
 });
 
-describe('Stock delete tests', () => {
+describe('DELETE /stock/:id', () => {
   it('should return 404 with wrong id', (done) => {
     request(app).delete('/stocks/666')
       .expect(404)
